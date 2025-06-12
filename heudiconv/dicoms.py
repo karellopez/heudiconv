@@ -26,17 +26,15 @@ import warnings
 
 import pydicom as dcm
 
-from .utils import (
+from .utils import (  # ``link_file`` creates a symlink or hardlink and falls back to copying when; linking is not possible, improving Windows compatibility.
     SeqInfo,
     TempDirs,
     get_typed_attr,
+    link_file,
     load_json,
     set_readonly,
     strptime_dcm_da_tm,
     strptime_dcm_dt,
-    # link_file() creates a symlink or hardlink and falls back to copying when
-    # linking is not possible, improving Windows compatibility.
-    link_file,
 )
 
 if TYPE_CHECKING:
@@ -611,8 +609,10 @@ def compress_dicoms(
                 for filename in dicom_list:
                     outfile = op.join(tmpdir, op.basename(filename))
                     if not op.islink(outfile):
-                        # Use link_file() so that archiving works even on
-                        # systems where symlinks are disallowed.
+                        # ``link_file`` ensures that each DICOM is archived
+                        # even when creating a symlink is not permitted (e.g.,
+                        # Windows without developer mode). It falls back to a
+                        # copy in that case.
                         link_file(op.realpath(filename), outfile, symlink=True)
                     # place into archive stripping any lead directories and
                     # adding the one corresponding to prefix

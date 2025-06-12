@@ -535,8 +535,12 @@ def add_rows_to_scans_keys_file(fn: str, newrows: dict[str, list[str]]) -> None:
       extra rows to add (acquisition time, referring physician, random string)
     """
     if op.lexists(fn):
+        # ``newline=""`` prevents universal newline translation on Windows
+        # and avoids empty rows appearing in the parsed data.
         with open(fn, "r", newline="") as csvfile:
             reader = csv.reader(csvfile, delimiter="\t")
+            # Ignore empty lines that may be produced by inconsistent
+            # line endings across platforms.
             existing_rows = [row for row in reader if row]
         # skip header
         fnames2info = {row[0]: row[1:] for row in existing_rows[1:]}
@@ -560,6 +564,9 @@ def add_rows_to_scans_keys_file(fn: str, newrows: dict[str, list[str]]) -> None:
         lgr.warning("Sorting scans by date failed: %s", str(exc))
         data_rows_sorted = sorted(data_rows)
     # save
+    # When writing, ``newline=""`` and ``lineterminator="\n"`` ensure that
+    # the resulting file uses consistent LF line endings regardless of the
+    # platform, preventing the blank-line issues seen on Windows.
     with open(fn, "w", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter="\t", lineterminator="\n")
         writer.writerows([header] + data_rows_sorted)
