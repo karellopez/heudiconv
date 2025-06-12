@@ -535,9 +535,9 @@ def add_rows_to_scans_keys_file(fn: str, newrows: dict[str, list[str]]) -> None:
       extra rows to add (acquisition time, referring physician, random string)
     """
     if op.lexists(fn):
-        with open(fn, "r") as csvfile:
+        with open(fn, "r", newline="") as csvfile:
             reader = csv.reader(csvfile, delimiter="\t")
-            existing_rows = [row for row in reader]
+            existing_rows = [row for row in reader if row]
         # skip header
         fnames2info = {row[0]: row[1:] for row in existing_rows[1:]}
 
@@ -560,8 +560,8 @@ def add_rows_to_scans_keys_file(fn: str, newrows: dict[str, list[str]]) -> None:
         lgr.warning("Sorting scans by date failed: %s", str(exc))
         data_rows_sorted = sorted(data_rows)
     # save
-    with open(fn, "a") as csvfile:
-        writer = csv.writer(csvfile, delimiter="\t")
+    with open(fn, "w", newline="") as csvfile:
+        writer = csv.writer(csvfile, delimiter="\t", lineterminator="\n")
         writer.writerows([header] + data_rows_sorted)
 
 
