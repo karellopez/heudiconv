@@ -460,6 +460,34 @@ def safe_movefile(src: str, dest: str, overwrite: bool = False) -> None:
     _safe_op_file(src, dest, "move", overwrite=overwrite)
 
 
+def link_file(src: str, dest: str, symlink: bool = True) -> None:
+    """Create a symbolic or hard link with fallback to copying.
+
+    Parameters
+    ----------
+    src : str
+        Source filename
+    dest : str
+        Destination filename
+    symlink : bool, optional
+        If True, attempt to create a symbolic link.  If False, try a hard link.
+        If the link operation fails (for example, due to missing privileges or
+        platform limitations), the file is copied instead.  This helps ensure
+        behavior is consistent on Windows, where creating links may require
+        administrator privileges.
+    """
+
+    if op.lexists(dest):
+        os.unlink(dest)
+    try:
+        if symlink:
+            os.symlink(src, dest)
+        else:
+            os.link(src, dest)
+    except (OSError, AttributeError, NotImplementedError):
+        shutil.copyfile(src, dest)
+
+
 def _safe_op_file(src: str, dest: str, operation: str, overwrite: bool = False) -> None:
     """Copy or move file but blow if destination name already exists
 

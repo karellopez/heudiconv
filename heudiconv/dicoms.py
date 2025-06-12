@@ -34,6 +34,9 @@ from .utils import (
     set_readonly,
     strptime_dcm_da_tm,
     strptime_dcm_dt,
+    # link_file() creates a symlink or hardlink and falls back to copying when
+    # linking is not possible, improving Windows compatibility.
+    link_file,
 )
 
 if TYPE_CHECKING:
@@ -608,7 +611,9 @@ def compress_dicoms(
                 for filename in dicom_list:
                     outfile = op.join(tmpdir, op.basename(filename))
                     if not op.islink(outfile):
-                        os.symlink(op.realpath(filename), outfile)
+                        # Use link_file() so that archiving works even on
+                        # systems where symlinks are disallowed.
+                        link_file(op.realpath(filename), outfile, symlink=True)
                     # place into archive stripping any lead directories and
                     # adding the one corresponding to prefix
                     tar.add(
