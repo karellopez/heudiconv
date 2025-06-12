@@ -477,6 +477,9 @@ def link_file(src: str, dest: str, symlink: bool = True) -> None:
         administrator privileges.
     """
 
+    # On Windows this typically results in a copy because creating links often
+    # requires elevated privileges or developer mode to be enabled.
+
     if op.lexists(dest):
         os.unlink(dest)
     try:

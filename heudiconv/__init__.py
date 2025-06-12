@@ -6,6 +6,9 @@ try:
     # be missing, so fall back to a placeholder version string.
     from ._version import __version__
 except Exception:
+    # The version file is absent when running directly from a source tree
+    # without building the package.  Using a placeholder avoids import errors
+    # in such setups, which are common when developing on Windows.
     __version__ = "0+unknown"
 from .info import __packagename__
 

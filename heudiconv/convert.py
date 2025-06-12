@@ -33,21 +33,19 @@ from .dicoms import (
     group_dicoms_into_seqinfos,
 )
 from .due import Doi, due
-from .utils import (
+from .utils import (  # ``link_file`` safely creates symlinks or hardlinks and falls back to a; copy on platforms (such as Windows) where linking may fail.
     SeqInfo,
     TempDirs,
     assure_no_file_exists,
     clear_temp_dicoms,
     file_md5sum,
+    link_file,
     load_json,
     read_config,
     safe_copyfile,
     safe_movefile,
     save_json,
     set_readonly,
-    # link_file() safely creates symlinks or hardlinks and falls back to a copy
-    # on platforms (such as Windows) where linking may fail.
-    link_file,
     treat_infofile,
     write_config,
 )
@@ -775,8 +773,10 @@ def convert_dicom(
         for filename in item_dicoms:
             outfile = op.join(dicomdir, op.basename(filename))
             if not op.islink(outfile):
-                # Use the helper to avoid failures on systems where
-                # creating links is restricted (e.g., Windows without admin).
+                # Use ``link_file`` so that the DICOM files are linked or copied
+                # depending on platform capabilities. On Windows, creating
+                # symlinks may require administrative privileges, so the helper
+                # falls back to copying when necessary.
                 link_file(filename, outfile, symlink=_symlink)
 
 
