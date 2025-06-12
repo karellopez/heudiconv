@@ -45,6 +45,9 @@ from .utils import (
     safe_movefile,
     save_json,
     set_readonly,
+    # link_file() safely creates symlinks or hardlinks and falls back to a copy
+    # on platforms (such as Windows) where linking may fail.
+    link_file,
     treat_infofile,
     write_config,
 )
@@ -772,12 +775,9 @@ def convert_dicom(
         for filename in item_dicoms:
             outfile = op.join(dicomdir, op.basename(filename))
             if not op.islink(outfile):
-                # TODO: add option to enable hardlink?
-                #                if symlink:
-                #                    os.symlink(filename, outfile)
-                #                else:
-                #                    os.link(filename, outfile)
-                shutil.copyfile(filename, outfile)
+                # Use the helper to avoid failures on systems where
+                # creating links is restricted (e.g., Windows without admin).
+                link_file(filename, outfile, symlink=_symlink)
 
 
 def nipype_convert(
