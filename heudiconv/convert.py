@@ -687,7 +687,11 @@ def convert(
         # this may not always be the case: ex. fieldmap1, fieldmap2
         # will address after refactor
         if outname and op.exists(outname):
-            set_readonly(outname)
+            if os.name != "nt":
+                # Avoid setting the read-only flag on Windows because it
+                # prevents subsequent runs with ``--overwrite`` from cleaning up
+                # previous outputs.
+                set_readonly(outname)
 
         if custom_callable is not None:
             custom_callable(*item)
