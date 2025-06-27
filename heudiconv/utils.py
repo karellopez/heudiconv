@@ -369,10 +369,10 @@ def treat_infofile(filename: str) -> None:
     j = load_json(filename)
     j_slim = slim_down_info(j)
     save_json(filename, j_slim, sort_keys=True, pretty=True)
-    if os.name != "nt":
-        # On Windows, making files read-only prevents later overwrite and leads
-        # to permission errors when rerunning conversions.  Only set the flag
-        # on non-Windows platforms where it helps guard against accidental
+    if os.name != "nt" and not sys.platform.startswith("linux"):
+        # On Windows or Linux, making files read-only prevents later overwrite
+        # and leads to permission errors when rerunning conversions.  Only set
+        # the flag on other platforms where it helps guard against accidental
         # edits without interfering with cleanup.
         set_readonly(filename)
 
