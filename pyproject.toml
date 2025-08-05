@@ -6,8 +6,4 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.versioningit.write]
-file = "heudiconv/_version.py"
 
-[tool.versioningit.vcs]
-default-tag = "0.0.0"

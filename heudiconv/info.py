@@ -3,7 +3,18 @@ __url__ = "https://github.com/nipy/heudiconv"
 __packagename__ = "heudiconv"
 __description__ = "Heuristic DICOM Converter"
 __license__ = "Apache 2.0"
-__longdesc__ = """Convert DICOM dirs based on heuristic info - HeuDiConv
+__longdesc__ = """
+## About this fork
+
+This is **not the official version of HeuDiConv**.  
+It is a customized fork developed at the *Applied Neurocognitive Psychology Lab*, aimed at improving compatibility and usability in specific workflows.
+
+In particular, this variant offers **full support for Windows environments** and **removes file-writing restrictions** present in the original version, making it more flexible for local pipelines and GUI-based tools.
+
+All credits for the original development go to the NiPy community. This version is provided under the same [Apache 2.0 License](LICENSE) and is intended for specialized use cases.
+
+
+Convert DICOM dirs based on heuristic info - HeuDiConv
 uses the dcmstack package and dcm2niix tool to convert DICOM directories or
 tarballs into collections of NIfTI files following pre-defined heuristic(s)."""
 
@@ -28,7 +39,7 @@ REQUIRES = [
     "etelemetry",
     "filelock>=3.0.12",
     "nibabel>=5.3.1",
-    "nipype >=1.2.3",
+    "nipype-ancp",
     "pydicom >= 1.0.0",
 ]
 

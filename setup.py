@@ -49,7 +49,8 @@ def main():
     heudiconv_pkgs = [pkg for pkg in find_packages(".") if pkg.startswith("heudiconv")]
 
     setup(
-        name=ldict["__packagename__"],
+        version="0.1.1",
+        name="heudiconv-ancp",
         author=ldict["__author__"],
         # author_email="team@???",
         description=ldict["__description__"],
