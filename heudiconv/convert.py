@@ -687,8 +687,7 @@ def convert(
         # this may not always be the case: ex. fieldmap1, fieldmap2
         # will address after refactor
         if outname and op.exists(outname):
-            if os.name != "nt" and not sys.platform.startswith("linux"):
-                # Avoid setting the read-only flag on Windows or Linux because
+            if os.name != "nt" and not sys.platform.startswith("linux") and sys.platform != "darwin":
                 # it prevents subsequent runs with ``--overwrite`` from cleaning
                 # up previous outputs.
                 set_readonly(outname)
